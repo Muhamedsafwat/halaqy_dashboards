@@ -1,0 +1,18 @@
+{
+  "try": {
+    "hello": "Hello",
+    "welcome": "Welcome to our website"
+  },
+  "nav": {
+    "home": "Home",
+    "aboutUs": "About us",
+    "projects": "Projects",
+    "mediaCenter": "Media Center",
+    "supplierRegistration": "Supplier Registration",
+    "contactUs": "Contact Us",
+    "invest": "Investment",
+    "buy": "Buy",
+    "rent": "Rent",
+    "moreOptions": "More Options"
+  }
+}

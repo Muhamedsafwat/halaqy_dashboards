@@ -1,0 +1,19 @@
+{
+  "try": {
+    "hello": "مرحبا",
+    "welcome": "أهلاً بك في موقعنا"
+  },
+  "nav": {
+    "home": "الرئيسية",
+    "aboutUs": "معلومات عنا",
+    "projects": "المشاريع",
+    "mediaCenter": "المركز الإعلامي",
+    "supplierRegistration": "تسجيل الموردين",
+    "contactUs": "اتصل بنا",
+    "invest": "استثمار",
+    "buy": "شراء",
+    "rent": "إيجار",
+    "moreOptions": "المزيد"
+  }
+}
+
