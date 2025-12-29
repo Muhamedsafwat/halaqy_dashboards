@@ -2,16 +2,14 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Menu, X, ChevronDown } from "lucide-react";
 import Link from "next/link";
-import LocaleSwitcher from "@/components/shared/Buttons/LocaleSwitcher";
+import Image from "next/image";
 
 const MobileNav = ({
   locale,
   navLinks,
   menuOpen,
   setMenuOpen,
-  otherLocale,
-  buttons,
-  t,
+  BarberProAdmin,
 }) => {
   const [buttonsOpen, setButtonsOpen] = useState(false);
   const ref = useRef(null);
@@ -39,17 +37,20 @@ const MobileNav = ({
   }, [menuOpen]);
 
   return (
-    <div className="w-full flex items-center justify-between gap-5 p-4 bg-base-dark text-base-light overflow-hidden">
+    <div className="relative w-full flex items-center gap-5 p-4 bg-base-dark text-base-light overflow-hidden">
       <button onClick={() => setMenuOpen(!menuOpen)} className="z-50">
         {menuOpen ? <X size={24} /> : <Menu size={24} />}
       </button>
 
-      <div className="flex">
-        <img
+      <div className="absolute left-1/2 mt-4 flex -translate-x-1/2 justify-center items-center gap-2">
+        <Image
+          width={35}
+          height={35}
           src="/assets/Logo.png"
-          className="w-24 object-contain"
+          className="object-contain"
           alt="Logo"
         />
+        <p className="text-lg font-bold">{BarberProAdmin}</p>
       </div>
 
       <div
@@ -65,11 +66,16 @@ const MobileNav = ({
     }
   `}
       >
-        <img
-          src="/assets/Logo.png"
-          className="w-28 object-contain mt-8 mb-6"
-          alt="Logo"
-        />
+        <div className="flex justify-center mt-8 mb-6 items-center gap-2">
+          <Image
+            src="/assets/Logo.png"
+            width={35}
+            height={35}
+            className="object-contain "
+            alt="Logo"
+          />
+          <p className="text-lg font-bold">{BarberProAdmin}</p>
+        </div>
 
         <div className="flex flex-col gap-4 w-full items-center">
           {navLinks.map((link) => (
@@ -83,45 +89,9 @@ const MobileNav = ({
             </Link>
           ))}
         </div>
-
-        <div className="flex flex-col w-11/12 mt-6 border-t border-gray-700 pt-4">
-          <button
-            onClick={() => setButtonsOpen(!buttonsOpen)}
-            className="w-full flex justify-between items-center px-4 py-2 text-lg font-semibold rounded hover:bg-base-light hover:text-base-dark transition-colors duration-150"
-          >
-            {t("moreOptions")}
-            <ChevronDown
-              className={`w-4 h-4 transition-transform duration-150 ${
-                buttonsOpen ? "rotate-180" : ""
-              }`}
-            />
-          </button>
-
-          <div
-            className={`overflow-hidden flex text-center justify-center transition-all duration-300 ${
-              buttonsOpen ? "max-h-96 mt-2" : "max-h-0"
-            }`}
-          >
-            {buttons.map((button, i) => (
-              <Link
-                key={i}
-                href={button.href}
-                className=" px-4 py-2 rounded-lg hover:bg-base-light hover:text-base-dark transition-colors duration-150"
-                onClick={() => setMenuOpen(false)}
-              >
-                {button.Name}
-              </Link>
-            ))}
-          </div>
-          <div className="mt-6 mb-8">
-            <LocaleSwitcher locale={locale} otherLocale={otherLocale} />
-          </div>
-        </div>
       </div>
     </div>
   );
 };
 
 export default MobileNav;
-
-

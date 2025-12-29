@@ -7,12 +7,35 @@ body {
 }
 
 :root {
-  --color-base-light: white;
+  --color-base-light: #F5F5F5;
   --color-base-dark: black;
+  --color-borderColor: #515151;
+  --color-brandColor: #FFB300;
+  --color-borderColorv2: #343434;
+  --color-borderColorv3: #E7F3EA;
+  --color-borderColorv4: #E2E8F0;
+  --color-borderColorv5: #5E5E5E;
+  --color-background: #292929;
+  --color-backgroundDiv: #0C0C0C;
 
 }
 @theme {
-    --color-base-light: white;
+    --color-base-light: #F5F5F5;
     --color-base-dark: black;
+    --color-borderColor: #515151;
+    --color-brandColor: #FFB300;
+    --color-borderColorv2: #343434;
+    --color-borderColorv3: #E7F3EA;
+    --color-borderColorv4: #E2E8F0;
+    --color-borderColorv5: #5E5E5E;
+    --color-background: #292929;
+    --color-backgroundDiv: #0C0C0C;
   }
+
+
+input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(100%);
+  transform: scale(1.2);
+  cursor: pointer;
+}
 

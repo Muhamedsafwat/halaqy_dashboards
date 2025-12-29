@@ -1,51 +1,49 @@
 "use client";
-import React from "react";
-import { useState } from "react";
-import { useParams } from "next/navigation";
-import { useTranslations } from "next-intl";
+import React, { useState } from "react";
 import DesktopNav from "./DesktopNav";
 import MobileNav from "./MobileNav";
 
-const NavBar = ({ locale }) => {
-  const t = useTranslations("nav");
-  const otherLocale = locale === "en" ? "ar" : "en";
+const NavBar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const navLinks = [
-    { id: 1, name: t("home"), href: "/" },
-    { id: 2, name: t("aboutUs"), href: "/about-us" },
-    { id: 3, name: t("projects"), href: "/projects" },
-    { id: 4, name: t("mediaCenter"), href: "/media-center" },
-    { id: 5, name: t("supplierRegistration"), href: "/supplier-Registration" },
-    { id: 6, name: t("contactUs"), href: "/contact-us" },
-  ];
-  const buttons = [
-    { Name: t("invest"), href: "/invest" },
-    { Name: t("buy"), href: "/buy" },
-    { Name: t("rent"), href: "/rent" },
+    {
+      id: 1,
+      name: "تسجيل متجر",
+      href: "/register-shop",
+      style: "text-brandColor font-bold",
+      linkStyle: "border-brandColor py-1 px-4 rounded-lg border",
+    },
+    {
+      id: 2,
+      name: "صاحب متجر جديد؟",
+      href: "/new-shop-owner",
+      style: "text-brandColor font-semibold",
+      linkStyle: "",
+    },
+    {
+      id: 3,
+      name: "الدعم",
+      href: "/support",
+      style: "text-base-light mr-5 font-semibold",
+      linkStyle: "",
+    },
   ];
 
+  const BarberProAdmin = "BarberPro Admin";
+
   return (
-    <nav className="">
+    <nav className="w-full">
       <div className="hidden lg:block">
-        <DesktopNav
-          locale={locale}
-          navLinks={navLinks}
-          otherLocale={otherLocale}
-          t={t}
-          buttons={buttons}
-        />
+        <DesktopNav navLinks={navLinks} BarberProAdmin={BarberProAdmin} />
       </div>
 
       <div className="block lg:hidden">
         <MobileNav
-          locale={locale}
           navLinks={navLinks}
           menuOpen={menuOpen}
           setMenuOpen={setMenuOpen}
-          otherLocale={otherLocale}
-          buttons={buttons}
-          t={t}
+          BarberProAdmin={BarberProAdmin}
         />
       </div>
     </nav>

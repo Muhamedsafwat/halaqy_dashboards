@@ -1,41 +1,34 @@
 import React from "react";
-import { Tally1 } from "lucide-react";
 import Link from "next/link";
-import LocaleSwitcher from "@/components/shared/Buttons/LocaleSwitcher";
-const DesktopNav = ({ locale, navLinks, otherLocale, buttons, t }) => {
+import Image from "next/image";
+const DesktopNav = ({ locale, navLinks, BarberProAdmin }) => {
   return (
-    <div className="w-full bg-base-dark p-4 text-base-light">
-      <div className="flex flex-row justify-around gap-5 w-full items-center">
-        <div className="flex gap-4 items-center">
-          <LocaleSwitcher locale={locale} otherLocale={otherLocale} />
-          {buttons.map((b, i) => (
-            <div key={i} className="realtive group">
-              <Link
-                href={`${locale}/${b.href}`}
-                className="flex items-center text-base text-base-light/80 hover:text-base-light transition-colors duration-300"
-              >
-                <Tally1 />{" "}
-                <span className="relative inline-block after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-0 after:h-[1px] after:bg-base-light after:transition-all after:duration-300 group-hover:after:w-full">
-                  {b.Name}
-                </span>
-              </Link>
-            </div>
-          ))}
-        </div>
-        <div className="flex gap-5 items-center">
+    <div className="w-full bg-base-dark p-6 text-base-light border-b border-borderColor ">
+      <div className="flex flex-row justify-between w-full ">
+        <div className="flex gap-2 items-center">
           {navLinks.map((link) => (
             <div key={link.id} className="relative group">
               <Link
                 href={`/${locale}/${link.href}`}
-                className="text-base text-base-light/80 hover:text-base-light transition-colors duration-300"
+                className={`text-base text-base-light/80 hover:text-base-light transition-colors duration-300 ${link.linkStyle}`}
               >
-                <span className="relative inline-block after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-0 after:h-[1px] after:bg-base-light after:transition-all after:duration-300 group-hover:after:w-full">
+                <span className={`text-base  capitalize ${link.style}`}>
                   {link.name}
                 </span>
               </Link>
             </div>
           ))}
-          <img src="/assets/Logo.png" className="w-24 object-contain" />
+        </div>
+
+        <div className="flex justify-center items-center gap-4">
+          <p className="text-lg font-semibold">{BarberProAdmin}</p>
+          <Image
+            src="/assets/Logo.png"
+            width={35}
+            height={35}
+            alt="logo"
+            className=" object-contain"
+          />
         </div>
       </div>
     </div>
@@ -43,5 +36,3 @@ const DesktopNav = ({ locale, navLinks, otherLocale, buttons, t }) => {
 };
 
 export default DesktopNav;
-
-
