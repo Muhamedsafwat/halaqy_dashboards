@@ -125,30 +125,33 @@ const Register = () => {
               <input className="outline-none" placeholder="123 شارع الحلاق" />
             </div>
           </div>
-          <div className="flex w-full mt-4 flex-wrap justify-between items-center gap-2">
-            <div className="w-1/4">
-              <label>المدينة</label>
+          <div className="flex md:flex-row flex-col w-full mt-4 gap-4">
+            <div className="w-full md:w-full">
+              <label className="block">المدينة</label>
               <input
                 placeholder="القاهرة"
                 className="w-full mt-2 p-2 rounded-lg bg-background"
               />
             </div>
-            <div className="w-1/3">
-              <label>المحافظة / الولاية</label>
+
+            <div className="w-full">
+              <label className="block">المحافظة / الولاية</label>
               <input
                 placeholder="الجيزة"
                 className="w-full mt-2 p-2 rounded-lg bg-background"
               />
             </div>
-            <div className="w-1/3">
-              <label>الرمز البريدي</label>
+
+            <div className="w-full md:w-full">
+              <label className="block">الرمز البريدي</label>
               <input
                 placeholder="10101010202"
                 className="w-full mt-2 p-2 rounded-lg bg-background"
               />
             </div>
           </div>
-          <div className="flex justify-between w-full mt-4 gap-5 items-start">
+
+          <div className="flex flex-col md:flex-row justify-between w-full mt-4 gap-5 items-start">
             <div className="flex flex-col justify-center w-full items-start gap-2">
               <label>رقم الهاتف *</label>
               <input
