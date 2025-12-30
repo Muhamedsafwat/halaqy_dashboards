@@ -2,6 +2,7 @@ import React from "react";
 import FormTitle from "@/components/shared/FormTitle/FormTitle";
 import Image from "next/image";
 import LocationSection from "@/components/ui/RegisterPage/LocationSection";
+
 import Times from "./Times";
 const Register = () => {
   return (

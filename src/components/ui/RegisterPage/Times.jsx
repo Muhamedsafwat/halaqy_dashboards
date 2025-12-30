@@ -27,7 +27,10 @@ const Times = () => {
           <th className="p-3 font-semibold w-1/4 text-start">اليوم</th>
           <th className="p-3 font-semibold w-1/12 text-start">الحالة</th>
           <th className="p-3 font-semibold w-1/4 text-start">موعد الفتح</th>
-          <th className="p-3 font-semibold w-1/12 text-center">إلى</th>
+          <th className="p-3 font-semibold hidden md:table-cell w-1/12 text-center">
+            إلى
+          </th>
+
           <th className="p-3 font-semibold w-1/4 text-start">موعد الإغلاق</th>
         </tr>
       </thead>
@@ -35,10 +38,8 @@ const Times = () => {
       <tbody>
         {days.map((day, index) => (
           <tr key={index}>
-            {/* اليوم */}
             <td className="p-3">{day}</td>
 
-            {/* الحالة */}
             <td className="p-3 text-start">
               <button
                 type="button"
@@ -55,7 +56,6 @@ const Times = () => {
               </button>
             </td>
 
-            {/* موعد الفتح */}
             <td className="p-3">
               {openDays[index] ? (
                 <input
@@ -70,7 +70,7 @@ const Times = () => {
               )}
             </td>
 
-            <td className="p-3 text-center">-</td>
+            <td className="p-3 text-center hidden md:block">-</td>
 
             <td className="p-3">
               {openDays[index] ? (
