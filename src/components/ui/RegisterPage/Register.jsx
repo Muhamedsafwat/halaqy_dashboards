@@ -74,14 +74,6 @@ const Register = ({ data }) => {
       return;
     }
 
-    if (authData.user.identities.length === 0) {
-      setMessage({
-        type: "error",
-        text: "هذا البريد الإلكتروني مسجل بالفعل، برجاء تسجيل الدخول",
-      });
-      setLoading(false);
-      return;
-    }
     const userId = authData.user.id;
 
     const { error: shopError } = await supabase.from("Shop").insert([
@@ -239,7 +231,7 @@ const Register = ({ data }) => {
               >
                 {data?.logoUrl || logoPreview ? (
                   <img
-                    src={data.logoUrl || logoPreview}
+                    src={data?.logoUrl || logoPreview}
                     alt="Logo Preview"
                     className="object-cover w-full h-full rounded-full"
                   />
@@ -278,7 +270,7 @@ const Register = ({ data }) => {
               >
                 {data || coverPreview ? (
                   <img
-                    src={data.coverUrl || coverPreview}
+                    src={data?.coverUrl || coverPreview}
                     alt="Cover Preview"
                     className="object-cover w-full h-full"
                   />
