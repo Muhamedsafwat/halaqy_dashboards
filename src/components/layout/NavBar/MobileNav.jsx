@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -81,7 +81,7 @@ const MobileNav = ({
           {navLinks.map((link) => (
             <Link
               key={link.id}
-              href={`${locale}/${link.href}`}
+              href={`${link.href}`}
               className="w-11/12 text-center text-lg font-semibold hover:text-base-dark hover:bg-base-light px-4 py-2 rounded transition-colors duration-150"
               onClick={() => setMenuOpen(false)}
             >

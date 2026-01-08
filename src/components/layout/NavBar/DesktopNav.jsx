@@ -9,7 +9,7 @@ const DesktopNav = ({ locale, navLinks, BarberProAdmin }) => {
           {navLinks.map((link) => (
             <div key={link.id} className="relative group">
               <Link
-                href={`/${locale}/${link.href}`}
+                href={`${link.href}`}
                 className={`text-base text-base-light/80 hover:text-base-light transition-colors duration-300 ${link.linkStyle}`}
               >
                 <span className={`text-base  capitalize ${link.style}`}>

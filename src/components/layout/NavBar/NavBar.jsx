@@ -1,9 +1,12 @@
 "use client";
+
 import React, { useState } from "react";
 import DesktopNav from "./DesktopNav";
 import MobileNav from "./MobileNav";
+import { useAuth } from "@/context/AuthContext";
 
 const NavBar = () => {
+  const { isAuth } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
 
   const navLinks = [
@@ -33,20 +36,22 @@ const NavBar = () => {
   const BarberProAdmin = "BarberPro Admin";
 
   return (
-    <nav className="w-full">
-      <div className="hidden lg:block">
-        <DesktopNav navLinks={navLinks} BarberProAdmin={BarberProAdmin} />
-      </div>
+    <>
+      <nav className={`${!isAuth ? "w-full" : "hidden"}`}>
+        <div className="hidden lg:block">
+          <DesktopNav navLinks={navLinks} BarberProAdmin={BarberProAdmin} />
+        </div>
 
-      <div className="block lg:hidden">
-        <MobileNav
-          navLinks={navLinks}
-          menuOpen={menuOpen}
-          setMenuOpen={setMenuOpen}
-          BarberProAdmin={BarberProAdmin}
-        />
-      </div>
-    </nav>
+        <div className="block lg:hidden">
+          <MobileNav
+            navLinks={navLinks}
+            menuOpen={menuOpen}
+            setMenuOpen={setMenuOpen}
+            BarberProAdmin={BarberProAdmin}
+          />
+        </div>
+      </nav>
+    </>
   );
 };
 

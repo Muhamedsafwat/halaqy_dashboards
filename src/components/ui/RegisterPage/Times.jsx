@@ -1,7 +1,7 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-const Times = () => {
+const Times = ({ setWorkingHours, data }) => {
   const days = [
     "الاثنين",
     "الثلاثاء",
@@ -11,13 +11,62 @@ const Times = () => {
     "السبت",
     "الأحد",
   ];
+  const isViewMode = !!data;
 
   const [openDays, setOpenDays] = useState({});
+  const [openTimes, setOpenTimes] = useState({});
+  const [closeTimes, setCloseTimes] = useState({});
   const toggleDay = (index) => {
     setOpenDays((prev) => ({
       ...prev,
       [index]: !prev[index],
     }));
+  };
+  useEffect(() => {
+    if (!data?.workingHours) return;
+
+    const initialOpenDays = {};
+    const initialOpenTimes = {};
+    const initialCloseTimes = {};
+
+    days.forEach((day, index) => {
+      const dayData = data.workingHours[day];
+
+      if (dayData) {
+        initialOpenDays[index] = true;
+        initialOpenTimes[index] = dayData.open;
+        initialCloseTimes[index] = dayData.close;
+      } else {
+        initialOpenDays[index] = false;
+      }
+    });
+
+    setOpenDays(initialOpenDays);
+    setOpenTimes(initialOpenTimes);
+    setCloseTimes(initialCloseTimes);
+  }, [data]);
+
+  useEffect(() => {
+    const hours = {};
+    days.forEach((day, index) => {
+      if (openDays[index]) {
+        hours[day] = {
+          open: openTimes[index] || "09:00",
+          close: closeTimes[index] || "18:00",
+        };
+      } else {
+        hours[day] = null;
+      }
+    });
+    setWorkingHours(hours);
+  }, [openDays, openTimes, closeTimes]);
+
+  const handleOpenChange = (index, value) => {
+    setOpenTimes((prev) => ({ ...prev, [index]: value }));
+  };
+
+  const handleCloseChange = (index, value) => {
+    setCloseTimes((prev) => ({ ...prev, [index]: value }));
   };
 
   return (
@@ -42,10 +91,13 @@ const Times = () => {
               <td className="p-3 text-start">
                 <button
                   type="button"
-                  onClick={() => toggleDay(index)}
-                  className={`relative rounded-3xl cursor-pointer px-6 py-3 transition-colors duration-300 ease-in-out ${
+                  disabled={isViewMode}
+                  onClick={() => !isViewMode && toggleDay(index)}
+                  className={`relative rounded-3xl px-6 py-3 transition-colors duration-300 ease-in-out ${
                     openDays[index] ? "bg-brandColor" : "bg-background"
-                  }`}
+                  }
+                 ${isViewMode ? "cursor-auto" : "cursor-pointer"} 
+                  `}
                 >
                   <span
                     className={`absolute top-1/2 transform -translate-y-1/2 w-5 h-5 rounded-full bg-base-dark transition-transform duration-300 ${
@@ -58,9 +110,12 @@ const Times = () => {
               <td className="p-3">
                 {openDays[index] ? (
                   <input
+                    readOnly={isViewMode}
+                    disabled={isViewMode}
                     type="time"
                     className="border border-brandColor bg-background rounded text-base-light p-2 w-full"
-                    defaultValue="09:00"
+                    value={openTimes[index] || "09:00"}
+                    onChange={(e) => handleOpenChange(index, e.target.value)}
                   />
                 ) : (
                   <span className="border rounded p-2 w-full text-center text-base-light/80 inline-block">
@@ -74,9 +129,12 @@ const Times = () => {
               <td className="p-3">
                 {openDays[index] ? (
                   <input
+                    readOnly={isViewMode}
+                    disabled={isViewMode}
                     type="time"
                     className="border border-brandColor bg-background rounded text-base-light p-2 w-full"
-                    defaultValue="18:00"
+                    value={closeTimes[index] || "18:00"}
+                    onChange={(e) => handleCloseChange(index, e.target.value)}
                   />
                 ) : (
                   <span className="border rounded p-2 w-full text-center text-base-light/80 inline-block">
@@ -99,10 +157,13 @@ const Times = () => {
 
               <button
                 type="button"
-                onClick={() => toggleDay(index)}
+                disabled={isViewMode}
+                onClick={() => !isViewMode && toggleDay(index)}
                 className={`relative rounded-3xl px-6 py-3 transition-colors ${
                   openDays[index] ? "bg-brandColor" : "bg-background"
-                }`}
+                }
+                ${isViewMode ? "cursor-auto" : "cursor-pointer"} 
+                `}
               >
                 <span
                   className={`absolute top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-base-dark transition-transform ${
@@ -119,8 +180,11 @@ const Times = () => {
                 </span>
                 {openDays[index] ? (
                   <input
+                    readOnly={isViewMode}
+                    disabled={isViewMode}
                     type="time"
-                    defaultValue="09:00"
+                    value={openTimes[index] || "09:00"}
+                    onChange={(e) => handleOpenChange(index, e.target.value)}
                     className="w-full border border-brandColor mt-2 bg-background rounded p-2"
                   />
                 ) : (
@@ -136,9 +200,12 @@ const Times = () => {
                 </span>
                 {openDays[index] ? (
                   <input
+                    readOnly={isViewMode}
+                    disabled={isViewMode}
                     type="time"
-                    defaultValue="18:00"
+                    value={closeTimes[index] || "18:00"}
                     className="w-full border mt-2 border-brandColor bg-background rounded p-2"
+                    onChange={(e) => handleCloseChange(index, e.target.value)}
                   />
                 ) : (
                   <span className="block border rounded mt-2 p-2 text-center text-base-light/80">
