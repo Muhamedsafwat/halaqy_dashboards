@@ -207,7 +207,7 @@ const Dashboard = ({
                 <div className="justify-center flex text-sm items-center gap-2">
                   <p>{item.duration}</p>
                   <span className="font-bold text-lg">.</span>
-                  <p clas> {item.price}</p>
+                  <p> {item.price}</p>
                 </div>
               </div>
             )}

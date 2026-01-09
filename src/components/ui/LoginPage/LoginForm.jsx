@@ -3,7 +3,10 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
+import { useRouter } from 'next/navigation'
+
 const LoginForm = () => {
+  const router = useRouter()
   const { login } = useAuth();
   const handleSubmit = (e) => {
     e.preventDefault();
