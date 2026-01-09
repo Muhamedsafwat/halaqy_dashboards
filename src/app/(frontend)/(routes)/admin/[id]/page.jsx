@@ -22,7 +22,7 @@ const page = () => {
     ownerRole: "المالك",
 
     mapUrl:
-      "https://www.google.com/maps?q=30.0444,31.2357&hl=ar&z=14&output=embed",
+      "https://www.google.com/maps?q=31.417952504002116,31.812964647572347&z=15&output=embed",
 
     workingHours: {
       السبت: { open: "10:00", close: "22:00" },
