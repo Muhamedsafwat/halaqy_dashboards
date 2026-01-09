@@ -4,7 +4,7 @@ import { useAuth } from "@/context/AuthContext";
 import Image from "next/image";
 import Link from "next/link";
 
-const Sidebar = ({ links, image, active, onSelect }) => {
+const Sidebar = ({ links, image, active, onSelect, name, title }) => {
   const { logout, isAuth } = useAuth();
 
   if (!isAuth) return null;
@@ -13,8 +13,8 @@ const Sidebar = ({ links, image, active, onSelect }) => {
     <aside className="fixed right-0 top-0 h-screen w-64 bg-base-dark text-base-light shadow-lg flex flex-col justify-between p-4 gap-6 z-50 border-l border-base-light/80">
       <div className="flex items-center justify-center w-full gap-4 pb-4">
         <div className="flex flex-col justify-center items-center">
-          <h2 className="font-bold text-lg">حلاقي</h2>
-          <span className="text-sm mt-2">ادمن داش بورد</span>
+          <h2 className="font-bold text-lg">{name}</h2>
+          <span className="text-sm mt-2">{title}</span>
         </div>
         <Image
           src={image}
