@@ -207,7 +207,7 @@ const Dashboard = ({
                 <div className="justify-center flex text-sm items-center gap-2">
                   <p>{item.duration}</p>
                   <span className="font-bold text-lg">.</span>
-                  <p clas> {item.price}</p>
+                  <p> {item.price}</p>
                 </div>
               </div>
             )}
@@ -231,14 +231,14 @@ const Dashboard = ({
                     className="object-cover"
                   />
                 </div>
-                <p className="font-medium">{item.clientName}</p>
+                <p className="font-medium">{item.staffName}</p>
               </div>
             )}
             <span
               className={`
     ${statusStyles[item.status] || "bg-gray-200 text-gray-600"}
     px-4 py-2 rounded-full
-    w-36 h-12 flex items-center justify-center gap-2
+    w-36 ${clients ? "h-12" : ""} flex items-center justify-center gap-2
     text-sm font-semibold
     transition-colors duration-300 ease-in-out
   `}
