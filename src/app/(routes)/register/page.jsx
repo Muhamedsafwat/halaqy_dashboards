@@ -1,10 +1,13 @@
 "use client";
 import React, { useState } from "react";
+import supabase from "@/services/SupaBaseClient";
+
 import FormTitle from "@/components/shared/FormTitle/FormTitle";
 import Image from "next/image";
 import LocationSection from "@/components/ui/RegisterPage/LocationSection";
-import supabase from "@/SupaBaseClient";
-import Times from "./Times";
+import Times from "@/components/ui/RegisterPage/Times";
+
+
 const Register = ({ data }) => {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -492,11 +495,10 @@ const Register = ({ data }) => {
             </button>
             {message && (
               <div
-                className={`p-3 rounded-lg text-sm font-semibold ${
-                  message.type === "success"
-                    ? "bg-green-100 text-green-700"
-                    : "bg-red-100 text-red-700"
-                }`}
+                className={`p-3 rounded-lg text-sm font-semibold ${message.type === "success"
+                  ? "bg-green-100 text-green-700"
+                  : "bg-red-100 text-red-700"
+                  }`}
               >
                 {message.text}
               </div>

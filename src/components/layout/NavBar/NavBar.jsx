@@ -12,23 +12,16 @@ const NavBar = () => {
   const navLinks = [
     {
       id: 1,
-      name: "تسجيل متجر",
-      href: "/register-shop",
+      name: "تسجيل دخول",
+      href: "/login",
       style: "text-brandColor font-bold",
       linkStyle: "border-brandColor py-1 px-4 rounded-lg border",
     },
     {
       id: 2,
       name: "صاحب متجر جديد؟",
-      href: "/new-shop-owner",
+      href: "/register",
       style: "text-brandColor font-semibold",
-      linkStyle: "",
-    },
-    {
-      id: 3,
-      name: "الدعم",
-      href: "/support",
-      style: "text-base-light mr-5 font-semibold",
       linkStyle: "",
     },
   ];

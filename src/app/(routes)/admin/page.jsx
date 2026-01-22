@@ -3,11 +3,11 @@ import { useState } from "react";
 import Sidebar from "@/components/layout/SideBar/SideBar";
 
 import Dashboard from "@/components/shared/Section/Dashboard";
-import Bookings from "./sections/Bookings";
-import Staff from "./sections/Staff";
-import Customers from "./sections/Customers";
-import Finance from "./sections/Finance";
-import Settings from "./sections/Settings";
+import Bookings from "@/components/ui/AdminDashboard/sections/Bookings";
+import Staff from "@/components/ui/AdminDashboard/sections/Staff";
+import Customers from "@/components/ui/AdminDashboard/sections/Customers";
+import Finance from "@/components/ui/AdminDashboard/sections/Finance";
+import Settings from "@/components/ui/AdminDashboard/sections/Settings";
 
 const AdminPage = () => {
   const [activeSection, setActiveSection] = useState("dashboard");
