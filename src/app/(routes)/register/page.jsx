@@ -1,6 +1,10 @@
 "use client";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import supabase from "@/services/SupaBaseClient";
+import { register as registerAction } from "@/actions/auth/register";
+import { useAuth } from "@/context/AuthContext";
+import Swal from "sweetalert2";
 
 import FormTitle from "@/components/shared/FormTitle/FormTitle";
 import Image from "next/image";
@@ -9,6 +13,8 @@ import Times from "@/components/ui/RegisterPage/Times";
 
 
 const Register = ({ data }) => {
+  const router = useRouter();
+  const { setShopId } = useAuth();
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
@@ -37,81 +43,194 @@ const Register = ({ data }) => {
     mapUrl: "",
   });
 
-  const uploadImage = async (file) => {
-    if (!file) return null;
+  // Extract latitude and longitude from map URL
+  const extractCoordinates = (mapUrl) => {
+    if (!mapUrl) return { latitude: null, longitude: null };
 
-    const filePath = `${Date.now()}_${file.name}`;
-    const { error } = await supabase.storage
-      .from("Images")
-      .upload(filePath, file);
+    try {
+      const match = mapUrl.match(/q=([\d.]+),([\d.]+)/);
+      if (match) {
+        return {
+          latitude: parseFloat(match[1]),
+          longitude: parseFloat(match[2]),
+        };
+      }
+    } catch (error) {
+      console.error("Error extracting coordinates:", error);
+    }
+    return { latitude: null, longitude: null };
+  };
 
-    if (error) {
-      console.log("Upload error:", error);
+  // Convert working hours from Arabic day names to RPC format
+  const convertWorkingHours = (workingHours) => {
+    const dayMapping = {
+      الأحد: 0, // Sunday
+      الاثنين: 1, // Monday
+      الثلاثاء: 2, // Tuesday
+      الأربعاء: 3, // Wednesday
+      الخميس: 4, // Thursday
+      الجمعة: 5, // Friday
+      السبت: 6, // Saturday
+    };
+
+    const schedule = [];
+
+    Object.keys(dayMapping).forEach((arabicDay) => {
+      const dayData = workingHours[arabicDay];
+      const dayOfWeek = dayMapping[arabicDay];
+
+      if (dayData && dayData.open && dayData.close) {
+        schedule.push({
+          day_of_week: dayOfWeek,
+          open_time: dayData.open,
+          close_time: dayData.close,
+          is_closed: false,
+        });
+      } else {
+        schedule.push({
+          day_of_week: dayOfWeek,
+          is_closed: true,
+        });
+      }
+    });
+
+    return schedule;
+  };
+
+  const uploadImage = async (file, shopId) => {
+    if (!file || !shopId) return null;
+
+    try {
+      const fileExtension = file.name.split(".").pop();
+      const filePath = `${shopId}/${crypto.randomUUID()}.${fileExtension}`;
+
+      const { error } = await supabase.storage
+        .from("shop-photos")
+        .upload(filePath, file);
+
+      if (error) {
+        console.error("Upload error:", error);
+        return null;
+      }
+
+      const { data } = supabase.storage
+        .from("shop-photos")
+        .getPublicUrl(filePath);
+
+      return data?.publicUrl || null;
+    } catch (error) {
+      console.error("Upload error:", error);
       return null;
     }
-
-    const { data } = supabase.storage.from("Images").getPublicUrl(filePath);
-    console.log("Public URL data:", data);
-    return data?.publicUrl || null;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setMessage(null);
+    setMessage("");
 
-    const logoUrl = await uploadImage(logoFile);
-    const coverUrl = await uploadImage(coverFile);
+    try {
+      // Step 1: Register user and promote to owner
+      const registerResult = await registerAction(email, password);
 
-    console.log("Logo URL:", logoUrl);
-    console.log("Cover URL:", coverUrl);
+      if (!registerResult.success) {
+        setMessage({ type: "error", text: registerResult.error });
+        setLoading(false);
+        await Swal.fire({
+          icon: "error",
+          title: "فشل التسجيل",
+          text: registerResult.error || "حدث خطأ أثناء التسجيل",
+        });
+        return;
+      }
 
-    const { data: authData, error: authError } = await supabase.auth.signUp({
-      email,
-      password,
-    });
+      // Step 2: Extract coordinates from map URL
+      const { latitude, longitude } = extractCoordinates(formData.mapUrl);
 
-    if (authError) {
-      setMessage({ type: "error", text: authError.message });
+      if (!latitude || !longitude) {
+        setMessage({
+          type: "error",
+          text: "يرجى تحديد موقع المتجر على الخريطة",
+        });
+        setLoading(false);
+        await Swal.fire({
+          icon: "error",
+          title: "خطأ",
+          text: "يرجى تحديد موقع المتجر على الخريطة",
+        });
+        return;
+      }
+
+      // Step 3: Create shop using upsert_my_shop RPC
+      const { data: shopId, error: shopError } = await supabase.rpc(
+        "upsert_my_shop",
+        {
+          p_name: formData.shopName,
+          p_description: formData.shopDescription || "",
+          p_address_text: formData.streetAddress,
+          p_latitude: latitude,
+          p_longitude: longitude,
+          p_seat_count: null, // Add if you have seat count field
+        }
+      );
+
+      if (shopError || !shopId) {
+        setMessage({
+          type: "error",
+          text: shopError?.message || "فشل إنشاء المتجر",
+        });
+        setLoading(false);
+        await Swal.fire({
+          icon: "error",
+          title: "خطأ",
+          text: shopError?.message || "فشل إنشاء المتجر",
+        });
+        return;
+      }
+
+      // Step 4: Upload images to shop-photos bucket
+      const logoUrl = await uploadImage(logoFile, shopId);
+      const coverUrl = await uploadImage(coverFile, shopId);
+
+      // Step 5: Set shop schedule using set_shop_schedule RPC
+      const schedule = convertWorkingHours(formData.workingHours);
+      const { error: scheduleError } = await supabase.rpc("set_shop_schedule", {
+        p_shop_id: shopId,
+        p_days: schedule,
+      });
+
+      if (scheduleError) {
+        console.error("Schedule error:", scheduleError);
+        // Continue anyway - schedule can be set later
+      }
+
+      // Step 6: Store shopId in context
+      setShopId(shopId);
+
+      // Step 7: Show success message and redirect
+      await Swal.fire({
+        icon: "success",
+        title: "تم التسجيل بنجاح!",
+        text: "تم إنشاء حسابك ومتجرك بنجاح",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+
+      router.push("/shop-admin");
+    } catch (error) {
+      console.error("Registration error:", error);
+      setMessage({
+        type: "error",
+        text: error.message || "حدث خطأ غير متوقع",
+      });
+      await Swal.fire({
+        icon: "error",
+        title: "خطأ",
+        text: error.message || "حدث خطأ غير متوقع",
+      });
+    } finally {
       setLoading(false);
-      return;
     }
-
-    const userId = authData.user.id;
-
-    const { error: shopError } = await supabase.from("Shop").insert([
-      {
-        shop_name: formData.shopName,
-        shop_slogan: formData.shopSlogan,
-        shop_description: formData.shopDescription,
-        logo_url: logoUrl,
-        cover_image_url: coverUrl,
-        street_address: formData.streetAddress,
-        city: formData.city,
-        state: formData.state,
-        postal_code: formData.postalCode,
-        phone: formData.phone,
-        email: formData.email,
-        owner_name: formData.ownerName,
-        owner_role: formData.ownerRole,
-        map_link: formData.mapUrl,
-        working_hours: formData.workingHours,
-        user_id: userId,
-        status: "pending",
-      },
-    ]);
-
-    if (shopError) {
-      setMessage({ type: "error", text: shopError.message });
-      setLoading(false);
-      return;
-    }
-
-    setMessage({
-      type: "success",
-      text: "تم إنشاء الحساب بنجاح، بانتظار موافقة الأدمن",
-    });
-    setLoading(false);
   };
   const handleLogoChange = (e) => {
     const file = e.target.files[0];
@@ -489,9 +608,10 @@ const Register = ({ data }) => {
             <button
               type="submit"
               onClick={handleSubmit}
-              className="px-4 py-2 rounded bg-brandColor text-base-light font-semibold"
+              disabled={loading}
+              className="px-4 py-2 rounded bg-brandColor text-base-light font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              سجل الان
+              {loading ? "جاري التسجيل..." : "سجل الان"}
             </button>
             {message && (
               <div
